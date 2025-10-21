@@ -1,2 +1,2 @@
-# rag-biyoloji-chatbot
-ArXiv Biyoloji makalelerine dayanan RAG tabanlı chatbot projesi.
+# rag-recipe book-chatbot
+Aile Tarifleri Asistanı RAG tabanlı chatbot projesi.
