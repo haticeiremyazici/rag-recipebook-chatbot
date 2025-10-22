@@ -16,12 +16,12 @@ try:
     GEMINI_KEY = userdata.get("GEMINI_API_KEY")
 except:
     GEMINI_KEY = os.getenv("GEMINI_API_KEY") # Diğer deploy platformları için
-    
+
 # Embedding Modelini Tanımla
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 # ChromaDB'yi Yükle (Dosyadan yükler, tekrar vektörleştirmez)
-vector_store = Chroma(embedding_function=embeddings, persist_directory="./chroma_db") 
+vector_store = Chroma(embedding_function=embeddings, persist_directory="./chroma_db")
 retriever = vector_store.as_retriever(search_kwargs={"k": 3})
 
 # LLM Modelini Tanımla
@@ -29,7 +29,7 @@ llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2, api_key=
 
 # Prompt Şablonu (Chatbot'un görevi)
 prompt_template = """
-Sen, sadece sağlanan tariflere dayanarak cevap veren bir Yemek Tarifi Uzmanısın. 
+Sen, sadece sağlanan tariflere dayanarak cevap veren bir Yemek Tarifi Uzmanısın.
 Görev: Yalnızca aşağıda verilen bağlam (tarif) içinde sorulan soruya cevap ver.
 Eğer tarif defterinde bilgi yoksa, "Bu tarif defterinde bu bilgi bulunmamaktadır." diye cevap ver.
 Bağlam (Tarif): {context}
