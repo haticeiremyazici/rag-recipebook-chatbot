@@ -92,7 +92,6 @@ dask-cuda==25.6.0
 dask-cudf-cu12==25.6.0
 dataclasses-json==0.6.7
 dataproc-spark-connect==0.8.3
-datasets==4.0.0
 db-dtypes==1.4.3
 dbus-python==1.2.18
 debugpy==1.8.15
@@ -300,8 +299,6 @@ langchain==1.0.2
 langchain-classic==1.0.0
 langchain-community==0.4
 langchain-core==1.0.0
-langchain-google-genai==3.0.0
-langchain-text-splitters==1.0.0
 langcodes==3.5.0
 langgraph==1.0.1
 langgraph-checkpoint==3.0.0
@@ -519,7 +516,6 @@ pytest==8.4.2
 python-apt==0.0.0
 python-box==7.3.2
 python-dateutil==2.9.0.post0
-python-dotenv==1.1.1
 python-json-logger==4.0.0
 python-louvain==0.16
 python-multipart==0.0.20
