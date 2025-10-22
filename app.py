@@ -52,7 +52,14 @@ retriever = vector_store.as_retriever(search_kwargs={"k": 3})
 
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2, api_key=GEMINI_KEY)
 
-prompt_template = """...""" 
+prompt_template = """
+Sen, sadece sağlanan tariflere dayanarak cevap veren bir Yemek Tarifi Uzmanısın.
+Görev: Yalnızca aşağıda verilen bağlam (tarif) içinde sorulan soruya cevap ver.
+Eğer tarif defterinde bilgi yoksa, "Bu tarif defterinde bu bilgi bulunmamaktadır." diye cevap ver.
+Bağlam (Tarif): {context}
+Soru: {question}
+Cevap:
+""" 
 prompt = ChatPromptTemplate.from_template(prompt_template)
 
 rag_chain = (
