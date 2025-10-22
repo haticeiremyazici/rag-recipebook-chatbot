@@ -6,23 +6,17 @@ Bu proje, Akbank GenAI Bootcamp kapsamında geliştirilmiş RAG temelli bir uygu
 
 ## 🎯 1. PROJENİN AMACI VE ELDE EDİLEN SONUÇLAR
 
-**[Kriter 1: Projenin Amacı]**
-
 Bu chatbot, el yazması PDF formatındaki tarif defterinde yer alan bilgilere dayanarak, kullanıcıların tariflerle ilgili spesifik sorgularını yanıtlamayı amaçlar. Model, genel bilgi vermek yerine, **yalnızca defterdeki bilgiyle** cevap üretir.
 
 **Elde Edilen Sonuç:** Sistem, karşılaşılan tüm teknik zorluklara rağmen, modern LCEL mimarisi ile kurulmuş ve Lor Tatlısı gibi spesifik sorgulara dahi **doğru ve bağlamsal** cevap verebilir durumdadır.
 
 ## 💾 2. VERİ SETİ HAKKINDA BİLGİ
 
-**[Kriter 2: Veri Seti Hazırlama]**
-
 * **Veri Kaynağı:** `recipe book.pdf` dosyası.
 * **İçerik:** Vişneli Gül Tatlısı, Lor Tatlısı, Baklava ve çeşitli Kurabiye/Kekler dahil olmak üzere **30'dan fazla tatlı ve tuzlu tarifin** malzeme listesi ve hazırlanış adımları.
 * **Veri Tipi:** Metin tabanlı (PDF).
 
 ## ⚙️ 3. ÇÖZÜM MİMARİSİ (RAG PİPELİNE)
-
-**[Kriter 3: Çözüm Mimariniz]**
 
 Proje, LangChain'in modern **LCEL (LangChain Expression Language)** yöntemi kullanılarak oluşturulan bir RAG zincirine dayanmaktadır.
 
@@ -35,12 +29,10 @@ Proje, LangChain'in modern **LCEL (LangChain Expression Language)** yöntemi kul
 
 ## 🛠️ 4. KODUN ÇALIŞMA KILAVUZU
 
-**[Kriter 4: Çalışma Kılavuzu]**
-
 Bu proje Google Colab ortamında geliştirilmiştir.
 
 1.  **Dosya Hazırlığı:** `app.py`, `requirements.txt` ve `recipe book.pdf` dosyaları GitHub'dan indirilerek Colab ortamına yüklenmelidir.
-2.  **API Anahtarları:** Colab **Secrets** üzerinden **`GEMINI_API_KEY`** ve **`NGROK_AUTH_TOKEN`** anahtarları eklenmelidir.
+2.  **API Anahtarları:** Colab **Secrets** üzerinden **`GEMINI_API_KEY`** anahtarları eklenmelidir.
 3.  **Kurulum:** Colab hücresinde `!pip install -r requirements.txt` komutu çalıştırılmalıdır.
 4.  **RAG Kurulumu:** Colab notebook'undaki tüm RAG kurulum (Embedding ve Zincir) kodları çalıştırılmalıdır.
 5.  **Arayüzü Başlatma:** Streamlit aşağıdaki komutlar ile Ngrok üzerinden tünellenerek canlıya alınır:
@@ -53,11 +45,9 @@ Bu proje Google Colab ortamında geliştirilmiştir.
 
 ## 🌐 5. WEB ARAYÜZÜ & PRODUCT KILAVUZU (CANLI DEPLOY)
 
-**[Kriter 5: Web Arayüzü]**
-
 Proje, **Streamlit** kullanılarak web arayüzü üzerinden sunulmaktadır.
 
-**CANLI DEPLOY LİNKİ:** 
+**CANLI DEPLOY LİNKİ:** https://rag-recipebook-chatbot.streamlit.app/
 **Test Senaryosu:**
 
 Kullanıcı, yukarıdaki linke giderek, tarif defterinden bir soru sorar. Örneğin: **"Lor Tatlısı'nın şerbeti için kaç bardak su ve şeker gereklidir?"**
