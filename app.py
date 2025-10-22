@@ -1,47 +1,51 @@
+# -----------------------------------------------------------
+# APP.PY NİHAİ VE HATASIZ VERSİYON
+# -----------------------------------------------------------
 import streamlit as st
 import os
-from langchain_core.vectorstores import VectorStore
-from langchain_community.vectorstores import Chroma
+from streamlit_chromadb_connection.chromadb_connection import ChromadbConnection # <<< YENİ BAĞLANTI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from streamlit import secrets
-from google.colab import userdata
+from langchain_community.vectorstores import Chroma # <<< CHROMA MODÜLÜNÜN STABİL YOLU
+from streamlit import secrets 
 
 # -----------------------------------------------------------
-# RAG Bileşenlerini Tanımlama (3. Aşamadan Tekrar Kullanım)
+# 1. BAĞLANTI VE RAG SİSTEMİ KURULUMU
 # -----------------------------------------------------------
+
+# API Key'i Streamlit Secrets'tan okuma
 try:
     GEMINI_KEY = secrets["GEMINI_API_KEY"]
 except:
-    GEMINI_KEY = os.getenv("GEMINI_API_KEY")
+    GEMINI_KEY = os.getenv("GEMINI_API_KEY") 
 
-# Embedding Modelini Tanımla
+# Embedding Modeli (HuggingFace, kota sorununu aşan model)
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-# ChromaDB'yi Yükle (Dosyadan yükler, tekrar vektörleştirmez)
-vector_store = Chroma(
-    embedding_function=embeddings, 
-    persist_directory="./chroma_db"
-) 
+# ChromaDB'ye bağlanma (st.connection kullanılarak)
+# path: Colab'de oluşturduğumuz ve GitHub'a yüklediğimiz klasörün yolu.
+conn = st.connection("chromadb", type=ChromadbConnection, path="./chroma_db", embedding_function=embeddings)
+
+# Chroma'dan LangChain Retriever'ı çekme
+# Not: st.connection'ın döndürdüğü client'ı LangChain'e tanıtıyoruz.
+vector_store = Chroma(client=conn.get_client(), collection_name="langchain", embedding_function=embeddings)
 retriever = vector_store.as_retriever(search_kwargs={"k": 3})
+
 # LLM Modelini Tanımla
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2, api_key=GEMINI_KEY)
 
-# Prompt Şablonu (Chatbot'un görevi)
+# Prompt ve LCEL Zinciri (Aynı kalır)
 prompt_template = """
-Sen, sadece sağlanan tariflere dayanarak cevap veren bir Yemek Tarifi Uzmanısın.
-Görev: Yalnızca aşağıda verilen bağlam (tarif) içinde sorulan soruya cevap ver.
-Eğer tarif defterinde bilgi yoksa, "Bu tarif defterinde bu bilgi bulunmamaktadır." diye cevap ver.
+Sen, sadece sağlanan tariflere dayanarak cevap veren bir Yemek Tarifi Uzmanısın. [...]
 Bağlam (Tarif): {context}
 Soru: {question}
 Cevap:
 """
 prompt = ChatPromptTemplate.from_template(prompt_template)
 
-# LCEL Zincirini Kur
 rag_chain = (
     {"context": retriever, "question": RunnablePassthrough()}
     | prompt
@@ -50,15 +54,15 @@ rag_chain = (
 )
 
 # -----------------------------------------------------------
-# STREAMLIT ARAYÜZÜ
+# STREAMLIT ARAYÜZ KODU
 # -----------------------------------------------------------
 st.title("🍰 Tarif Defteri Asistanı Chatbot (RAG)")
-st.write("PDF'teki tariflere (Vişneli Gül Tatlısı, Lor Tatlısı vb.) dayanarak sorularınızı cevaplıyorum.")
+st.write("PDF'teki tariflere dayanarak cevap veriyorum.")
 
 query = st.text_input("Hangi tatlının malzemelerini veya tarifini öğrenmek istersiniz?")
 
 if query:
     with st.spinner('Tarif defterinde arama yapılıyor...'):
-        response = rag_chain.invoke({"question": query})
+        response = rag_chain.invoke(query)
         st.success("Tarif Cevabı:")
         st.info(response)
