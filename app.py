@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 # RAG Bileşenleri için gerekli importlar
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
