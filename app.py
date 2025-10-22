@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 # RAG Bileşenleri için gerekli importlar
-from langchain_chroma import Chroma
+from chromadb import PersistentClient # <<< DİREKT CHROMA DB
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
@@ -21,7 +21,16 @@ except:
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 # ChromaDB'yi Yükle (Dosyadan yükler, tekrar vektörleştirmez)
-vector_store = Chroma(embedding_function=embeddings, persist_directory="./chroma_db")
+client = PersistentClient(path="./chroma_db")
+vector_store_collection = client.get_collection(
+    name="langchain", # LangChain'in varsayılan adıdır
+    embedding_function=embeddings
+from langchain_community.vectorstores import Chroma
+vector_store = Chroma(
+    client=client,
+    collection_name="langchain",
+    embedding_function=embeddings
+)
 retriever = vector_store.as_retriever(search_kwargs={"k": 3})
 
 # LLM Modelini Tanımla
