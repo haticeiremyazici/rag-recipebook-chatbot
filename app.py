@@ -25,6 +25,7 @@ client = PersistentClient(path="./chroma_db")
 vector_store_collection = client.get_collection(
     name="langchain", # LangChain'in varsayılan adıdır
     embedding_function=embeddings
+)
 from langchain_community.vectorstores import Chroma
 vector_store = Chroma(
     client=client,
