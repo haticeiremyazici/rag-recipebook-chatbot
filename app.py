@@ -1,44 +1,60 @@
 import streamlit as st
 import os
-# RAG Bileşenleri için gerekli importlar
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import Chroma 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from google.colab import userdata
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 # -----------------------------------------------------------
-# RAG Bileşenlerini Tanımlama (3. Aşamadan Tekrar Kullanım)
+# RAG BİLEŞENLERİNİN TANIMLANMASI
 # -----------------------------------------------------------
+
 try:
-    GEMINI_KEY = userdata.get("GEMINI_API_KEY")
-except:
-    GEMINI_KEY = os.getenv("GEMINI_API_KEY") # Diğer deploy platformları için
+    GEMINI_KEY = st.secrets["GEMINI_API_KEY"] 
+except Exception as e:
+    GEMINI_KEY = os.getenv("GEMINI_API_KEY") 
 
-# Embedding Modelini Tanımla
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-# ChromaDB'yi Yükle (Dosyadan yükler, tekrar vektörleştirmez)
-vector_store = Chroma(embedding_function=embeddings, persist_directory="./chroma_db")
+# -----------------------------------------------------------
+# KRİTİK DÜZELTME: CHROMA DB'Yİ HER SEFERİNDE OLUŞTURMA
+# -----------------------------------------------------------
+CHROMA_DB_PATH = "./chroma_db"
+PDF_PATH = "recipe book.pdf" 
+
+if not os.path.exists(CHROMA_DB_PATH):
+
+    loader = PyPDFLoader(PDF_PATH)
+    documents = loader.load()
+    
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200) # Hocanın önerdiği boyut
+    splits = text_splitter.split_documents(documents)
+
+    vector_store = Chroma.from_documents(
+        documents=splits,
+        embedding=embeddings,
+        persist_directory=CHROMA_DB_PATH
+    )
+    st.success("Vektör veritabanı başarıyla oluşturuldu!")
+else:
+
+    vector_store = Chroma(
+        embedding_function=embeddings, 
+        persist_directory=CHROMA_DB_PATH
+    )
+
+
 retriever = vector_store.as_retriever(search_kwargs={"k": 3})
 
-# LLM Modelini Tanımla
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2, api_key=GEMINI_KEY)
 
-# Prompt Şablonu (Chatbot'un görevi)
-prompt_template = """
-Sen, sadece sağlanan tariflere dayanarak cevap veren bir Yemek Tarifi Uzmanısın.
-Görev: Yalnızca aşağıda verilen bağlam (tarif) içinde sorulan soruya cevap ver.
-Eğer tarif defterinde bilgi yoksa, "Bu tarif defterinde bu bilgi bulunmamaktadır." diye cevap ver.
-Bağlam (Tarif): {context}
-Soru: {question}
-Cevap:
-"""
+prompt_template = """...""" 
 prompt = ChatPromptTemplate.from_template(prompt_template)
 
-# LCEL Zincirini Kur
 rag_chain = (
     {"context": retriever, "question": RunnablePassthrough()}
     | prompt
@@ -47,15 +63,15 @@ rag_chain = (
 )
 
 # -----------------------------------------------------------
-# STREAMLIT ARAYÜZÜ
+# STREAMLIT ARAYÜZ KODU
 # -----------------------------------------------------------
 st.title("🍰 Tarif Defteri Asistanı Chatbot (RAG)")
-st.write("PDF'teki tariflere (Vişneli Gül Tatlısı, Lor Tatlısı vb.) dayanarak sorularınızı cevaplıyorum.")
+st.write("PDF'teki tariflere dayanarak sorularınızı cevaplıyorum.")
 
 query = st.text_input("Hangi tatlının malzemelerini veya tarifini öğrenmek istersiniz?")
 
 if query:
     with st.spinner('Tarif defterinde arama yapılıyor...'):
-        response = rag_chain.invoke({"question": query})
+        response = rag_chain.invoke(query)
         st.success("Tarif Cevabı:")
         st.info(response)
