@@ -52,3 +52,6 @@ Proje, **Streamlit** kullanılarak web arayüzü üzerinden sunulmaktadır.
 
 Kullanıcı, yukarıdaki linke giderek, tarif defterinden bir soru sorar. Örneğin: **"Lor Tatlısı'nın şerbeti için kaç bardak su ve şeker gereklidir?"**
 * **Beklenen Cevap:** Sistem, PDF'i tarar ve Lor Tatlısı'na ait bilgiyi çekerek cevap verir.
+
+NOTLAR:
+Blocklanma için streamlit cloudda deploy edilen repoda çok değişiklik yapılması hata vermesine neden olabiliyormuş. "Your account has  exceeded fair-use limits and was blocked by the system." bu uyarıyla streamlit hesabıma da tekrar giremediğim için yeni deploy da oluşturamadım. Mentorum yaşadığım durumu READ.ME dosyama eklememi söyledi.
