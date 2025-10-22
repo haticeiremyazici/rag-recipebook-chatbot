@@ -57,7 +57,7 @@ Bu proje Google Colab ortamında geliştirilmiştir.
 
 Proje, **Streamlit** kullanılarak web arayüzü üzerinden sunulmaktadır.
 
-**CANLI DEPLOY LİNKİ:** (https://soporiferous-stickit-alysha.ngrok-free.dev)
+**CANLI DEPLOY LİNKİ:** 
 **Test Senaryosu:**
 
 Kullanıcı, yukarıdaki linke giderek, tarif defterinden bir soru sorar. Örneğin: **"Lor Tatlısı'nın şerbeti için kaç bardak su ve şeker gereklidir?"**
