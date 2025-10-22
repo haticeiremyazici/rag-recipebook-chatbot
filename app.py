@@ -22,11 +22,9 @@ embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 # ChromaDB'yi Yükle (Dosyadan yükler, tekrar vektörleştirmez)
 vector_store = Chroma(
     embedding_function=embeddings, 
-    persist_directory="./chroma_db"
-)
+    persist_directory="./chroma_db")
     name="langchain", # LangChain'in varsayılan adıdır
     embedding_function=embeddings
-)
 from langchain_community.vectorstores import Chroma
 vector_store = Chroma(
     client=client,
