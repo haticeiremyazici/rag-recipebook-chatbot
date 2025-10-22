@@ -297,7 +297,6 @@ keyrings.google-artifactregistry-auth==1.1.2
 kiwisolver==1.4.9
 kubernetes==34.1.0
 langchain==1.0.2
-langchain-chroma==1.0.0
 langchain-classic==1.0.0
 langchain-community==0.4
 langchain-core==1.0.0
