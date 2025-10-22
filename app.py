@@ -23,14 +23,7 @@ embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 vector_store = Chroma(
     embedding_function=embeddings, 
     persist_directory="./chroma_db")
-    name="langchain", # LangChain'in varsayılan adıdır
-    embedding_function=embeddings
-from langchain_community.vectorstores import Chroma
-vector_store = Chroma(
-    client=client,
-    collection_name="langchain",
-    embedding_function=embeddings
-)
+
 retriever = vector_store.as_retriever(search_kwargs={"k": 3})
 
 # LLM Modelini Tanımla
